@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tall-linking"
+version = "1.0.0"
+description = "Tiered API Linking for Legacy wells: probabilistic linkage of legacy well records to regulatory well databases"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Muhammad Risha"}]
+requires-python = ">=3.10"
+dependencies = ["numpy", "pandas", "scipy", "scikit-learn", "rapidfuzz", "requests", "pyyaml"]
+
+[project.scripts]
+tall = "tall.cli:main"
+
+[tool.setuptools]
+packages = ["tall"]

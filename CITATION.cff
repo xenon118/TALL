@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "TALL: Tiered API Linking for Legacy wells"
+version: 1.0.0
+date-released: 2026-10-25
+license: MIT
+authors:
+  - family-names: Risha
+    given-names: Muhammad
+    affiliation: Texas Tech University
+repository-code: "https://github.com/<user>/tall"
+doi: "10.5281/zenodo.XXXXXXX"

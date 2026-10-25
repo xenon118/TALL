@@ -1,0 +1,82 @@
+# TALL configuration. Copy to config.yaml and edit.
+
+workdir: work            # snapshots, split, models and outputs are written here
+radius_m: 5000           # candidate search radius around each legacy record
+seed: 2026               # tuning / test split
+
+legacy:
+  path: legacy_wells.csv
+  columns:               # column names in your legacy table
+    id: row_id
+    state: State
+    county: County
+    well_name: Well name        # lease name and well number in one field, e.g. "Smith A No. 3"
+    latitude: Latitude
+    longitude: Longitude
+    completion_year: Completion year   # optional; blank if unknown
+    total_depth: TD                    # optional
+    api: API                           # optional; records that carry one form the benchmark
+
+thresholds:              # defaults shown; all optional
+  max_assign_m: 1000
+  unnumbered_m: 300
+  twin_m: 30
+  lease_match: 85
+  lease_contra: 50
+  p_high: 0.95
+  p_med: 0.85
+
+unitised_words: [UNIT, SWD, DISPOSAL, INJECTION, WATERFLOOD, CONSOLIDATED]
+
+states:
+  TX:
+    code: "42"           # two-digit API state code
+    dummy_from: 80000    # sequences from here carry no era information (omit if not applicable)
+    vintage_bands:       # [max completion year, max sequence]; a candidate above the limit is excluded
+      - [1960, 10000]
+      - [1967, 21000]
+      - [1975, 32000]
+    county_codes: {}     # filled from labelled records; add entries for counties without labels
+    sources:
+      rrc:
+        type: arcgis
+        urls:
+          - https://gis.rrc.texas.gov/server/rest/services/rrc_public/RRC_Public_Viewer_Srvs/MapServer/0
+        fields:          # candidate field names for each role, in order of preference
+          api: [API, API_NUM]
+          well_no: [GIS_WELL_NUMBER, WELL_NUMBER]
+          lat: [GIS_LAT83, LATITUDE]
+          lon: [GIS_LONG83, LONGITUDE]
+          status: [GIS_SYMBOL_DESCRIPTION, STATUS]
+      vendor:            # a manual CSV export from any other provider
+        type: csv
+        path: exports/*.csv
+        columns:
+          api: API10
+          name: Well_Name
+          well_no: Well_Number
+          lat: Latitude
+          lon: Longitude
+          status: Well_Status
+          spud_year: Spud_Date
+          td: Total_Depth_ft
+  NM:
+    code: "30"
+    vintage_bands:
+      - [1967, 30000]
+    dummy_from: 60000
+    sources:
+      nmocd:
+        type: arcgis
+        urls:
+          - https://mapservice.nmstatelands.org/arcgis/rest/services/Public/NMOCD_Wells_V3/MapServer
+        fields:
+          api: [API, api]
+          name: [wellname, WELL_NAME]
+          well_no: [WELL_NUMBER]
+          operator: [ogrid_name, OPERATOR]
+          lat: [latitude, LATITUDE]
+          lon: [longitude, LONGITUDE]
+          status: [status]
+          spud_year: [year_spudd, year_spudded]
+          td: [meas_depth, measured_vertical_depth]
